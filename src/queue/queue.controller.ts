@@ -8,8 +8,8 @@ export class QueueController {
   constructor(private readonly queueService: QueueService) {}
 
   @Post()
-  create(@Body() createQueueDto: CreateQueueDto) {
-    return this.queueService.create(createQueueDto);
+  create(@Body() dto: CreateQueueDto) {
+    return this.queueService.create(dto);
   }
 
   @Get()
@@ -17,14 +17,9 @@ export class QueueController {
     return this.queueService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.queueService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateQueueDto: UpdateQueueDto) {
-    return this.queueService.update(+id, updateQueueDto);
+  @Patch(':id/status')
+  updateStatus(@Param('id') id: string, @Body() dto: UpdateQueueDto) {
+    return this.queueService.updateStatus(+id, dto);
   }
 
   @Delete(':id')
@@ -32,3 +27,4 @@ export class QueueController {
     return this.queueService.remove(+id);
   }
 }
+

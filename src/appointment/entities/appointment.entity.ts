@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Doctor } from '../../doctor/entities/doctor.entity';
 
 @Entity()
 export class Appointment {
@@ -9,15 +10,18 @@ export class Appointment {
   patientName: string;
 
   @Column()
-  doctorName: string;
+  appointmentDate: string; // YYYY-MM-DD
 
   @Column()
-  date: string; 
+  appointmentTime: string; // HH:mm
 
-  @Column()
-  time: string; 
+  @Column({ default: 'booked' })
+  status: string; // booked, completed, canceled
 
-  @Column()
-  status: string; 
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @ManyToOne(() => Doctor, (doctor) => doctor.appointments, { eager: true })
+  doctor: Doctor;
 }
 

@@ -1,4 +1,8 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateQueueDto } from './create-queue.dto';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 
-export class UpdateQueueDto extends PartialType(CreateQueueDto) {}
+export class UpdateQueueDto {
+  @IsString()
+  @IsOptional()
+  @IsIn(['waiting', 'with doctor', 'completed'])
+  status?: string;
+}

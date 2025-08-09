@@ -8,10 +8,9 @@ export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
-  create(@Body() createDto: CreateAppointmentDto) {
-    return this.appointmentService.create(createDto);
+  create(@Body() dto: CreateAppointmentDto) {
+    return this.appointmentService.create(dto);
   }
-
 
   @Get()
   findAll() {
@@ -24,8 +23,8 @@ export class AppointmentController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAppointmentDto: UpdateAppointmentDto) {
-    return this.appointmentService.update(+id, updateAppointmentDto);
+  update(@Param('id') id: string, @Body() dto: UpdateAppointmentDto) {
+    return this.appointmentService.update(+id, dto);
   }
 
   @Delete(':id')
@@ -33,3 +32,4 @@ export class AppointmentController {
     return this.appointmentService.remove(+id);
   }
 }
+

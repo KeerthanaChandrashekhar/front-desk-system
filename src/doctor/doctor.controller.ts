@@ -7,14 +7,15 @@ import {
   Param,
   Delete,
   NotFoundException,
+  Query, 
 } from '@nestjs/common';
-import { DoctorService } from './doctor.service';
+import { DoctorsService } from './doctor.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { Doctor } from './entities/doctor.entity';
 
 @Controller('doctor')
 export class DoctorController {
-  constructor(private readonly doctorService: DoctorService) {}
+  constructor(private readonly doctorService: DoctorsService) {}
 
   @Post()
   create(@Body() createDoctorDto: CreateDoctorDto) {
@@ -31,13 +32,31 @@ export class DoctorController {
   }
 
   @Get()
-  findAll() {
-    console.log('GET /doctor called');
-    return this.doctorService.findAll();
+  findAll(
+    @Query('specialization') specialization?: string,
+    @Query('location') location?: string,
+    @Query('availableFrom') availableFrom?: string,
+    @Query('availableTo') availableTo?: string,
+  ) {
+    console.log('GET /doctor called with filters:', {
+      specialization,
+      location,
+      availableFrom,
+      availableTo,
+    });
+    return this.doctorService.findAll({
+      specialization,
+      location,
+      availableFrom,
+      availableTo,
+    });
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateDoctorDto: Partial<Doctor>) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateDoctorDto: Partial<Doctor>,
+  ) {
     const updatedDoctor = await this.doctorService.update(+id, updateDoctorDto);
     if (!updatedDoctor) {
       throw new NotFoundException(`Doctor with ID ${id} not found`);

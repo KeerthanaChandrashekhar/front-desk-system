@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Doctor } from '../../doctor/entities/doctor.entity';
 
 @Entity()
 export class Queue {
@@ -9,8 +10,15 @@ export class Queue {
   patientName: string;
 
   @Column()
-  queueNumber: number;
+  status: string; // 'waiting', 'with doctor', 'completed'
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @ManyToOne(() => Doctor, (doctor) => doctor.appointments, { eager: true })
+  doctor: Doctor;
 
   @Column()
-  status: string; // e.g., "Waiting", "With Doctor", "Completed"
+  queueNumber: number; // auto-assigned
 }
+
