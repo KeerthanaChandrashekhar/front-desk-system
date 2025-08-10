@@ -1,41 +1,28 @@
 "use client"
 
 import { type ReactNode, useEffect, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
-import { auth } from "@/lib/auth-client"
+import { useRouter, usePathname } from "next/navigation"
+import { isAuthenticated, onAuthChange } from "@/lib/auth"
 
 export function Protected({ children }: { children?: ReactNode }) {
-  const [loading, setLoading] = useState(true)
-  const [authed, setAuthed] = useState<boolean>(false)
+  const [ready, setReady] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
 
   useEffect(() => {
-    let mounted = true
-    auth.getSession().then(({ session }) => {
-      if (!mounted) return
-      const has = !!session
-      setAuthed(has)
-      setLoading(false)
-      if (!has) {
-        const next = encodeURIComponent(pathname || "/")
-        router.replace(`/login?next=${next}`)
-      }
-    })
-    const unsub = auth.onAuthStateChange((has) => {
-      setAuthed(has)
-      if (!has) {
-        const next = encodeURIComponent(pathname || "/")
-        router.replace(`/login?next=${next}`)
-      }
-    })
-    return () => {
-      mounted = false
-      unsub?.()
+    const authed = isAuthenticated()
+    if (!authed) {
+      const next = encodeURIComponent(pathname || "/dashboard")
+      router.replace(`/login?next=${next}`)
+    } else {
+      setReady(true)
     }
+    const unsub = onAuthChange((has) => {
+      if (!has) router.replace("/login")
+    })
+    return () => unsub()
   }, [pathname, router])
 
-  if (loading) return <div className="p-6 text-neutral-400">{"Loading…"}</div>
-  if (!authed) return null
-  return <>{children ?? null}</>
+  if (!ready) return null
+  return <>{children}</>
 }
