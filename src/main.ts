@@ -7,7 +7,7 @@ async function bootstrap() {
 
   // Enable CORS for frontend requests
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: '*',
   });
 
   // Enable global DTO validation
